@@ -131,7 +131,6 @@ public class BlogAdminController {
         String imageName=DateUtil.getCurrentDateStr();
         map.put("coverImageName",imageName+"."+file.getOriginalFilename().split("\\.")[1]);
         String filePath=fileName+"Blog\\coverImages\\"+imageName+"."+file.getOriginalFilename().split("\\.")[1];
-        System.out.println(filePath);
         map.put("id", id);
         FileUtils.writeByteArrayToFile(new File(filePath),file.getBytes());
         int resultNum=0;
