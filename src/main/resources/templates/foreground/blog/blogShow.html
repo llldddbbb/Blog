@@ -1,0 +1,146 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>D.B的个人博客</title>
+    <meta name="keywords" content="个人博客,刘东宝,个人博客模板,博客模板,css3,html5,网站模板"/>
+    <meta name="description" content="这是一个主题为黑色时间轴的css3 html5个人博客网站"/>
+    <meta name="baidu-site-verification" content="dAf4qN6ld9" />
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link th:href="@{/css/animation.css}" rel="stylesheet"/>
+    <link th:href="@{/css/view.css}" rel="stylesheet"/>
+    <link th:href="@{/css/lrtk.css}" rel="stylesheet"/>
+    <link th:href="@{/css/embed.default.css}" rel="stylesheet" />
+    <script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/js/js.js}"></script>
+    <script th:src="@{js/modernizr.js}"></script>
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?d972459f4e6c7ad98bc5047746a97a11";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    <script type="text/javascript" th:src="@{/ueditor/third-party/SyntaxHighlighter/shCore.js}"></script>
+    <link rel="stylesheet" th:href="@{/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css}"/>
+    <script type="text/javascript">
+        SyntaxHighlighter.all();
+    </script>
+</head>
+<body>
+<header>
+    <nav id="nav">
+        <ul>
+            <li><a href="/">D.B's Blog</a></li>
+            <li><a href="javascript:window.open('/blog/show.do?id=2','newwindow')" th:title="网站源码下载" >网站源码下载</a></li>
+            <li th:each="blogType:${application.blogTypeList}"><a th:href="'javascript:window.open(\'/blog/list.do?typeId='+${blogType.id}+'\',\'newwindow\')'" th:title="${blogType.typeName}" th:text="${blogType.typeName}"></a></li>
+            <li><a href="javascript:window.open('/blogAdvice/preAdvice.do','newwindow')" th:title="留言建议" >留言建议</a></li>
+            <li><a href="javascript:window.open('/blog/show.do?id=1','newwindow')" title="关于博主">关于博主</a></li>
+        </ul>
+    </nav>
+</header>
+<!--header end-->
+<div id="mainbody">
+    <div class="blogs">
+        <div id="index_view">
+            <h2 class="t_nav">
+                <a href="/">网站首页</a><a th:href="'/blog/list.do?typeId='+${blog.blogType.id }" th:text="${blog.blogType.typeName }"></a>
+            </h2>
+            <h1 class="c_titile" th:text="${blog.title }"></h1>
+            <p class="box">
+                <span th:text="'发表时间('+${#dates.format(blog.publishTime,'yyyy-MM-dd')}+')'"></span><span th:text="'编辑：'+${blog.author }"></span><span th:text="'阅读('+${blog.readNum }+')'"></span>
+            </p>
+            <ul th:utext="${blog.content}">
+                ${blog.content}
+            </ul>
+            <div class="share">
+                <!-- Baidu Button BEGIN -->
+                <div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">
+                    <span class="bds_more">分享到：</span> <a class="bds_qzone"></a> <a class="bds_tsina"></a> <a class="bds_tqq"></a> <a
+                        class="bds_renren"></a> <a class="bds_t163"></a> <a class="shareCount"></a>
+                </div>
+                <script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=6574585"></script>
+                <script type="text/javascript" id="bdshell_js"></script>
+                <script type="text/javascript">
+                    document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+                </script>
+                <!-- Baidu Button END -->
+            </div>
+            <div class="ds-thread"  th:attr="data-thread-key=${blog.id },data-title=${blog.title },data-url='www.dblearn.top/blog/show.do?id='+${blog.id}"></div>
+            <!-- 多说评论框 end -->
+            <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+            <script type="text/javascript">
+                var duoshuoQuery = {short_name:"dblearn"};
+                (function() {
+                    var ds = document.createElement('script');
+                    ds.type = 'text/javascript';ds.async = true;
+                    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                    ds.charset = 'UTF-8';
+                    (document.getElementsByTagName('head')[0]
+                    || document.getElementsByTagName('body')[0]).appendChild(ds);
+                })();
+            </script>
+        </div>
+        <!--bloglist end-->
+        <aside >
+            <div class="tuijian" >
+                <h2>推荐文章</h2>
+                <ol>
+                    <li th:each="recommendBlog,iterationStatus:${application.recommendBlogList}"><span><strong th:text="${iterationStatus.index+1}">01</strong></span><a th:href="'javascript:window.open(\'/blog/show.do?id='+${recommendBlog.id}+'\',\'newwindow\')'" th:text="${recommendBlog.title}" ></a></li>
+                </ol>
+            </div>
+            <div class="clicks">
+                <h2>热门点击</h2>
+                <ol th:each="hotBlog:${session.hotBlogList}">
+                    <li><span><a th:href="'javascript:window.open(\'/blog/list.do?typeId='+${hotBlog.blogType.id}+'\',\'newwindow\')'" th:text="${hotBlog.blogType.typeName}"  ></a></span><a th:href="'javascript:window.open(\'/blog/show.do?id='+${hotBlog.id}+'\',\'newwindow\')'" ><font color='gray' th:text="${hotBlog.title}"></font></a></li>
+                </ol>
+            </div>
+            <div class="sunnav">
+                <h2>博客标签</h2>
+                <ul>
+                    <li th:each="blogTag:${application.blogTagList}"><a th:href="'javascript:window.open(\'/blog/list.do?tagId='+${blogTag.id}+'\',\'newwindow\')'"  title="${blogTag.tagName}" th:text="${blogTag.tagName}"></a></li>
+                </ul>
+            </div>
+
+            <div class="search">
+                <h2>日期归档</h2>
+                <ul class="date" th:each="dateCount:${session.dateCountList }">
+                    <li><a th:href="'javascript:window.open(\'/blog/list.do?publishTime='+${dateCount.publishTimeStr }+'\',\'newwindow\')'" th:text="${dateCount.publishTimeStr}+'('+${dateCount.blogCount }+')'"></a></li>
+                </ul>
+            </div>
+
+            <div class="clicks">
+                <h2>技术探讨</h2>
+                <ol th:each="technologyBlog:${session.technologyBlogList}">
+                    <li><span><a th:href="'javascript:window.open(\'/blog/list.do?tagId='+${technologyBlog.blogTag.id}+'\',\'newwindow\')'" th:text="${technologyBlog.blogTag.tagName}"></a></span><a th:href="'javascript:window.open(\'/blog/show.do?id='+${technologyBlog.id}+'\',\'newwindow\')'" th:text="${technologyBlog.title}" ></a></li>
+                </ol>
+            </div>
+
+            <div class="viny">
+                <dl>
+                    <dt class="art"><img th:src="@{/images/artwork.png}" alt="专辑"/></dt>
+                    <dd class="icon-song"><span></span>天空之城</dd>
+                    <dd class="icon-artist"><span></span>歌手：蒋敦豪</dd>
+                    <dd class="icon-album"><span></span>所属专辑：《中国新歌声》</dd>
+                    <dd class="icon-like"><span></span><a >喜欢</a></dd>
+                    <dd class="music">
+                        <audio th:src="@{/images/music.mp3}" controls=""></audio>
+                    </dd>
+                    <!--也可以添加loop属性 音频加载到末尾时，会重新播放-->
+                </dl>
+            </div>
+
+        </aside>
+    </div>
+    <!--blogs end-->
+</div>
+<!--mainbody end-->
+
+<!-- jQuery仿腾讯回顶部和建议 代码开始 -->
+<div id="tbox">
+    <a id="togbook" th:href="@{blogAdvice/preAdvice.do}"></a> <a id="gotop" href="javascript:void(0)"></a>
+</div>
+<!-- 代码结束 -->
+</body>
+</html>

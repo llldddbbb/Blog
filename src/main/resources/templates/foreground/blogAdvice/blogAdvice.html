@@ -1,0 +1,102 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>D.B的个人博客</title>
+    <meta name="keywords" content="黑色模板,个人网站模板,个人博客模板,博客模板,css3,html5,网站模板" />
+    <meta name="description" content="这是一个有关黑色时间轴的css3 html5 网站模板" />
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link th:href="@{/css/view.css}" rel="stylesheet"/>
+    <link th:href="@{/css/lrtk.css}" rel="stylesheet" />
+    <link th:href="@{/css/embed.default.css}" rel="stylesheet" />
+    <script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/js/js.js}"></script>
+    <script th:src="@{/js/modernizr.js}"></script>
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?d972459f4e6c7ad98bc5047746a97a11";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function blogAdviceSubmit(){
+            var nickName=$("#nickName").val();
+            var content=$("#content").val();
+            if(nickName==null||nickName==''){
+                alert("请输入昵称");
+                return;
+            }
+            if(content==null||content==''){
+                alert("请输入建议内容!");
+                return;
+            }
+            if(nickName.length>15){
+                alert("昵称长度不能大于15!");
+                return;
+            }
+            $.post("/blogAdvice/save.do?",{nickName:nickName,content:content},function(result){
+                var result=eval("("+result+")");
+                if(result.success){
+                    alert("提交成功，感谢您的建议!");
+                    window.location.href="/blogAdvice/preAdvice.do";
+                }else{
+                    alert("提交失败!");
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<header>
+    <nav id="nav">
+        <ul>
+            <li><a href="/">D.B's Blog</a></li>
+            <li><a href="javascript:window.open('/blog/show.do?id=2','newwindow')" th:title="网站源码下载" >网站源码下载</a></li>
+            <li th:each="blogType:${application.blogTypeList}"><a th:href="'javascript:window.open(\'/blog/list.do?typeId='+${blogType.id}+'\',\'newwindow\')'" th:title="${blogType.typeName}" th:text="${blogType.typeName}"></a></li>
+            <li><a href="javascript:window.open('/blogAdvice/preAdvice.do','newwindow')" th:title="留言建议" >留言建议</a></li>
+            <li><a href="javascript:window.open('/blog/show.do?id=1','newwindow')" title="关于博主">关于博主</a></li>
+        </ul>
+    </nav>
+</header>
+<div id="mainbody">
+    <div class="blogs">
+        <div class="otherlink" >
+            <h2 style="margin-bottom: 15px"><font color="white">网友建议</font></h2>
+            <ul>
+                <li th:each="blogAdvice:${blogAdviceList}">
+                    <span style="line-height: 48px;margin-left: 0px;" th:utext="'昵称:'+${blogAdvice.nickName } "><font color="#f2be45" th:text="'('+${#dates.format(blogAdvice.publishTime,'yyyy-MM-dd')}+')'"></font></span><h2 style="line-height: 20px ;border-bottom:none;" th:utext="'建议内容: '+${blogAdvice.content }"></h2><span style="line-height: 48px;margin-left: 600px; color:#333;" ><font color="white">博主回复:</font><font color="#9bbe10" style="padding-right: 100px" th:utext="${blogAdvice.reply==null?'稍后会回复哦~':blogAdvice.reply}"></font></span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="page" th:utext="${pageCode }"></div>
+
+        <div class="otherlink" style="margin-top: 25px">
+            <h2><font color="white" >发表建议</font></h2>
+            <div class="ds-replybox">
+                <a class="ds-avatar" href="javascript:void(0);" onclick="return false"><img src="/images/comment_default.png"/></a>
+                <input  type="search" name="nickName" id="nickName" style="margin-bottom: 6px;font-size: 12px;padding: 2px;padding-left: 10px;color: #408080" placeholder="请输入您的昵称" />
+                <div class="ds-textarea-wrapper ds-rounded-top">
+                    <textarea name="message" id="content" title="Ctrl+Enter快捷提交" placeholder="说点什么吧…"></textarea>
+                </div>
+                <div class="ds-post-toolbar">
+                    <div class="ds-post-options ds-gradient-bg">
+                        <span class="ds-sync"></span>
+                    </div>
+                    <button class="ds-post-button" onclick="javascript:blogAdviceSubmit()">提交建议</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery仿腾讯回顶部和建议 代码开始 -->
+<div id="tbox">
+    <a id="togbook" href="/blogAdvice/preAdvice.do"></a> <a id="gotop" href="javascript:void(0)"></a>
+</div>
+<!-- 代码结束 -->
+</body>
+</html>

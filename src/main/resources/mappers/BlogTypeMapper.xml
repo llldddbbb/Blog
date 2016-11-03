@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 对应dao接口 -->
+<mapper namespace="com.blog.mapper.BlogTypeMapper">
+    <resultMap id="BlogTypeResult" type="BlogType">
+        <result property="id" column="id"/>
+        <result property="typeName" column="typeName"/>
+    </resultMap>
+
+    <select id="findBlogTypeList" resultMap="BlogTypeResult">
+        select * from t_blogType
+    </select>
+
+
+    <select id="getBlogTypeById" resultMap="BlogTypeResult" parameterType="Integer">
+        select * from t_blogType where id=#{typeId}
+    </select>
+    
+    
+    <update id="updateBlogType" parameterType="BlogType">
+        update t_blogType
+        <set>
+            <if test="typeName!=null and typeName!=''">
+                typeName=#{typeName},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    
+    <select id="findBlogTypeComboList" resultMap="BlogTypeResult">
+        select * from t_blogType
+    </select>
+
+</mapper> 

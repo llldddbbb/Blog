@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 对应dao接口 -->
+<mapper namespace="com.blog.mapper.LinkMapper">
+    <resultMap id="LinkResult" type="Link">
+        <result property="id" column="id"/>
+        <result property="linkName" column="linkName"/>
+        <result property="linkUrl" column="linkUrl"/>
+        <result property="linkEmail" column="linkEmail"/>
+        <result property="orderNum" column="orderNum"/>
+    </resultMap>
+
+    <select id="findLinkList" resultMap="LinkResult">
+        select * from t_link order by orderNum
+    </select>
+    
+    <insert id="saveLink" parameterType="Link">
+        insert into t_link values(null,#{linkName},#{linkUrl},#{linkEmail},#{orderNum})
+    </insert>
+    
+    <update id="updateLink" parameterType="Link">
+        update t_link
+        <set>
+            <if test="linkName!=null and linkName!=''">
+                linkName=#{linkName},
+            </if>
+            <if test="linkUrl!=null and linkUrl!=''">
+                linkUrl=#{linkUrl},
+            </if>
+            <if test="linkEmail!=null and linkEmail!=''">
+                linkEmail=#{linkEmail},
+            </if>
+            <if test="orderNum!=null">
+                orderNum=#{orderNum},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    
+    <delete id="deleteLink" parameterType="Integer">
+        delete from t_link where id=#{id}
+    </delete>
+    
+
+</mapper> 

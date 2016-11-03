@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 对应dao接口 -->
+<mapper namespace="com.blog.mapper.BlogTagMapper">
+    <resultMap id="BlogTagResult" type="BlogTag">
+        <result property="id" column="id"/>
+        <result property="tagName" column="tagName"/>
+        <association property="blogType" column="typeId" select="com.blog.mapper.BlogTypeMapper.getBlogTypeById"></association>
+    </resultMap>
+
+    <select id="findBlogTagList" resultMap="BlogTagResult" >
+        select * from t_blogTag 
+    </select>
+
+    <select id="getBlogTagById" resultMap="BlogTagResult" parameterType="Integer">
+        select * from t_blogTag where id=#{id}
+    </select>
+    
+    <insert id="saveBlogTag" parameterType="BlogTag">
+        insert into t_blogTag values(null,#{tagName},#{blogType.id})
+    </insert>
+    
+    <update id="updateBlogTag" parameterType="BlogTag">
+        update t_blogTag
+        <set>
+	        <if test="tagName!=null and tagName!=''">
+	            tagName=#{tagName},
+	        </if>
+	        <if test="blogType.id!=null">
+	            typeId=#{blogType.id},
+	        </if>
+        </set>
+        where id=#{id}
+    </update>
+    
+    <delete id="deleteBlogTag" parameterType="Integer">
+        delete from t_blogTag where id=#{id}
+    </delete>
+    
+    <select id="findBlogTagComboListByTypeId" parameterType="Integer" resultMap="BlogTagResult">
+        select * from t_blogTag where typeId=#{typeId}
+    </select>
+
+</mapper> 

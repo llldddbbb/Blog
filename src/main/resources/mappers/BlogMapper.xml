@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 对应dao接口 -->
+<mapper namespace="com.blog.mapper.BlogMapper">
+    <resultMap id="BlogResult" type="Blog">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="author" column="author"/>
+        <result property="readNum" column="readNum"/>
+        <result property="publishTime" column="publishTime"/>
+        <result property="isRecommend" column="isRecommend"/>
+        <result property="recommendOrder" column="recommendOrder"/>
+        <result property="coverImageName" column="coverImageName"/>
+        <association property="blogType" column="blogTypeId" select="com.blog.mapper.BlogTypeMapper.getBlogTypeById"></association>
+      	<association property="blogTag" column="blogTagId" select="com.blog.mapper.BlogTagMapper.getBlogTagById"></association>
+    </resultMap>
+
+
+    <select id="findRecommendBlogList" resultMap="BlogResult">
+        select * from t_blog where isRecommend=1 order by recommendOrder limit 0,9
+    </select>
+
+
+    <select id="findHotBlogList" resultMap="BlogResult">
+        select * from t_blog order by readNum desc limit 0,9
+    </select>
+
+    <select id="findTechnologyBlogList" resultMap="BlogResult">
+        select * from t_blog where blogTypeId=1 limit 0,9
+    </select>
+
+    <select id="findBlogList" resultMap="BlogResult" parameterType="Map">
+        select * from t_blog 
+        <where>
+            <if test="typeId!=null">
+                and blogTypeId=#{typeId}
+            </if>
+            <if test="tagId!=null">
+                and blogTagId=#{tagId}
+            </if>
+            <if test="publishTime!=null and publishTime!=''">
+                and publishTime like #{publishTime}
+            </if>
+            <if test="title!=null and title!=''">
+                and title like #{title}
+            </if>
+        </where>
+		
+        	order by publishTime desc
+        
+        <if test="start!=null and pageSize!=null">
+       		limit #{start},#{pageSize}
+       	</if>
+    </select>
+    
+    
+    <select id="getBlogById" resultMap="BlogResult" parameterType="Integer">
+        select * from t_blog where id=#{id}
+    </select>
+    
+    <select id="findDateCountList" resultMap="BlogResult" parameterType="Integer">
+        SELECT DATE_FORMAT(publishTime,'%Y年%m月')AS publishTimeStr ,COUNT(publishTime) AS blogCount FROM t_blog GROUP BY DATE_FORMAT(publishTime,'%Y年%m月') ORDER BY DATE_FORMAT(publishTime,'%Y年%m月') DESC
+    </select>
+    
+    <update id="updateBlogReadNum" parameterType="Integer" >
+        update t_blog set readNum=readNum+1 where id=#{id}
+    </update>
+    
+    <select id="getBlogTotal" resultType="Integer" parameterType="Map">
+        select count(*) from t_blog
+        <where>
+            <if test="typeId!=null">
+                and blogTypeId=#{typeId}
+            </if>
+            <if test="tagId!=null">
+                and blogTagId=#{tagId}
+            </if>
+            <if test="publishTime!=null and publishTime!=''">
+                and publishTime like #{publishTime}
+            </if>
+            <if test="title!=null and title!=''">
+                and title like #{title}
+            </if>
+        </where>
+    </select>
+    
+    <insert id="saveBlog" parameterType="Blog">
+        insert into t_blog values(null,#{title},#{content},#{author},#{readNum},now(),#{blogType.id},#{blogTag.id},#{isRecommend},#{recommendOrder},#{coverImageName})
+    </insert>
+    
+    <delete id="deleteBlog" parameterType="Integer">
+        delete from t_blog where id=#{id}
+    </delete>
+    
+    <update id="saveMore" parameterType="Map">
+        update t_blog
+        <set>
+            <if test="coverImageName!=null and coverImageName!=''">
+                coverImageName=#{coverImageName},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    
+    <update id="updateBlog" parameterType="Blog">
+        update t_blog 
+        <set>
+            <if test="title!=null and title!=''">
+                title=#{title},
+            </if>
+            <if test="content!=null and content!=''">
+                content=#{content},
+            </if>
+            <if test="blogType.id!=null">
+                blogTypeId=#{blogType.id},
+            </if>
+            <if test="blogTag.id!=null">
+                blogTagId=#{blogTag.id},
+            </if>
+            <if test="isRecommend!=null">
+                isRecommend=#{isRecommend},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+</mapper> 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 对应dao接口 -->
+<mapper namespace="com.blog.mapper.BlogAdviceMapper">
+    <resultMap id="BlogAdviceResult" type="BlogAdvice">
+        <result property="id" column="id"/>
+        <result property="nickName" column="nickName"/>
+        <result property="userIP" column="userIP"/>
+        <result property="content" column="content"/>
+        <result property="publishTime" column="publishTime"/>
+        <result property="reply" column="reply"/>
+    </resultMap>
+
+
+    <select id="findBlogAdviceList" resultMap="BlogAdviceResult" parameterType="Map">
+        select * from t_blogadvice order by publishTime desc
+        <if test="start!=null and pageSize!=null">
+       		limit #{start},#{pageSize}
+       	</if>
+    </select>
+	
+    <insert id="saveBlogAdvice" parameterType="BlogAdvice">
+        insert into t_blogadvice values(null,#{nickName},#{userIP},#{content},now(),#{reply})
+    </insert>
+    
+    <update id="updateBlogAdviceReply" parameterType="BlogAdvice">
+        update t_blogadvice
+        <set>
+            <if test="reply!=null and reply!=''">
+                reply=#{reply},
+            </if>
+            <if test="content!=null and content!=''">
+                content=#{content}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    
+    <delete id="deleteBlogAdvice"  parameterType="Integer">
+        delete from t_blogadvice where id=#{id}
+    </delete>
+    
+    <select id="getBlogAdviceTotal" resultType="Integer">
+        select count(*) from t_blogAdvice
+    </select>
+
+</mapper> 

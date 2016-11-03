@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 对应dao接口 -->
+<mapper namespace="com.blog.mapper.BlogerMapper">
+    <resultMap id="BlogerResult" type="Bloger">
+        <result property="id" column="id"/>
+        <result property="userName" column="userName"/>
+        <result property="password" column="password"/>
+        <result property="nickName" column="nickName"/>
+        <result property="job" column="job"/>
+        <result property="hobby" column="hobby"/>
+        <result property="email" column="email"/>
+        <result property="webClick" column="webClick"/>
+        <result property="blogerImgName" column="blogerImgName"/>
+    </resultMap>
+
+
+    <select id="getBloger" resultMap="BlogerResult">
+        select * from t_bloger;
+    </select>
+    
+    <select id="login" resultMap="BlogerResult" parameterType="Map">
+        select * from t_bloger where userName=#{userName} and password=#{password}
+    </select>
+
+	<update id="updatePassword" parameterType="Map">
+	    update t_bloger 
+	    <set>
+	        <if test="password!=null and password!=''">
+	            password=#{password},
+	        </if>
+	    </set>
+	    where id=#{id}
+	</update>
+	
+	<update id="updateBlogerInfo" parameterType="Bloger">
+	    update t_bloger set nickName=#{nickName},job=#{job},hobby=#{hobby},email=#{email} where id=#{id}
+	</update>
+	
+	<update id="updateWebClick" >
+	    update t_bloger set webClick=webClick+1
+	</update>
+
+    <select id="getByUserName" parameterType="String" resultMap="BlogerResult">
+        select * from t_bloger where userName=#{userName}
+    </select>
+
+
+</mapper> 
